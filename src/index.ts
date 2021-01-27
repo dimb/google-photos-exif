@@ -6,6 +6,8 @@ import { findSupportedMediaFiles } from './helpers/find-supported-media-files';
 import { readPhotoTakenTimeFromGoogleJson } from './helpers/read-photo-taken-time-from-google-json';
 import { updateExifMetadata } from './helpers/update-exif-metadata';
 import { updateFileModificationDate } from './helpers/update-file-modification-date';
+import { findMissingFiles } from './helpers/find-missing-files';
+
 import { Directories } from './models/directories'
 import { SUPPORTED_MEDIA_FILE_EXTENSIONS } from './models/supported-media-file-extensions';
 
@@ -113,6 +115,7 @@ class GooglePhotosExif extends Command {
       }
     }
 
+
     // Log a summary
     this.log(`--- Processed ${mediaFiles.length} media files (${jpegs.length} JPEGs, ${gifs.length} GIFs and ${mp4s.length} MP4s) ---`);
     this.log(`--- The file modified timestamp has been updated on all media files ---`)
@@ -122,6 +125,10 @@ class GooglePhotosExif extends Command {
     } else {
       this.log(`--- We did not edit EXIF metadata for any of the files. This could be because all files already had a value set for the DateTimeOriginal field, or because we did not have a corresponding JSON file. ---`);
     }
+
+    this.log(`--- Missing files ---`);
+    await findMissingFiles(directories.input);
+
   }
 }
 
